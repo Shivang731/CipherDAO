@@ -6,7 +6,7 @@
 
 ---
 
-![CipherDAO Architecture](./cipherdao_architecture.jpg)
+![CipherDAO Architecture](cipherdao_architecture.jpg)
 
 ---
 
