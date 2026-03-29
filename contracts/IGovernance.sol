@@ -1,47 +1,39 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-
-import "@fhenixprotocol/cofhe-contracts/FHE.sol";
+import "@fhenixprotocol/cofhe-contracts/contracts/FHE.sol";
 
 /// @title IGovernance
 /// @notice Core governance interface for CipherDAO
 /// @dev All vote data stays encrypted. Only outcomes are revealed.
 interface IGovernance {
-
     // -------------------------------------------------------
     // EVENTS
     // -------------------------------------------------------
-
     /// @notice Emitted when a proposal is created (description stays encrypted)
     event ProposalCreated(uint256 indexed proposalId, address indexed creator, uint32 deadline);
-
     /// @notice Emitted when a vote is cast (choice and weight stay encrypted)
     event VoteCast(uint256 indexed proposalId, address indexed voter);
-
     /// @notice Emitted when a vote is overwritten before deadline (revocable voting)
     event VoteRevoked(uint256 indexed proposalId, address indexed voter);
-
     /// @notice Emitted when tally is finalised — only bool outcome revealed
     event ProposalFinalized(uint256 indexed proposalId, bool passed);
 
     // -------------------------------------------------------
     // STRUCTS
     // -------------------------------------------------------
-
     struct Proposal {
         address creator;
-        uint32 deadline;          // block number deadline
+        uint32 deadline; // block number deadline
         bool finalized;
         bool passed;
-        euint64 forVotes;         // homomorphic accumulator
-        euint64 againstVotes;     // homomorphic accumulator
-        euint64 quorumThreshold;  // encrypted — never revealed
+        euint64 forVotes; // homomorphic accumulator
+        euint64 againstVotes; // homomorphic accumulator
+        euint64 quorumThreshold; // encrypted — never revealed
     }
 
     // -------------------------------------------------------
     // CORE TRANSITIONS
     // -------------------------------------------------------
-
     /// @notice Create a new proposal
     /// @param encryptedDescription Encrypted proposal payload (client-side via @cofhe/sdk)
     /// @param deadline Block number when voting closes
@@ -72,14 +64,13 @@ interface IGovernance {
 
     /// @notice Finalize tally after deadline
     /// @dev Runs FHE.gt(forVotes, againstVotes) + FHE.gt(totalVotes, quorumThreshold)
-    ///      Decrypts only the boolean outcome via threshold network
+    /// Decrypts only the boolean outcome via threshold network
     /// @param proposalId Proposal to finalize
     function finalizeTally(uint256 proposalId) external;
 
     // -------------------------------------------------------
     // SELECTIVE DISCLOSURE
     // -------------------------------------------------------
-
     /// @notice Grant auditor permit to decrypt specific data
     /// @dev Uses FHE.allow — auditor can decrypt only what they are permitted to see
     /// @param auditor Address of the auditor
@@ -89,7 +80,6 @@ interface IGovernance {
     // -------------------------------------------------------
     // VIEWS
     // -------------------------------------------------------
-
     /// @notice Check if a proposal has passed (only available post-finalization)
     function proposalPassed(uint256 proposalId) external view returns (bool);
 
