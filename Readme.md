@@ -6,12 +6,6 @@
 
 ---
 
-![Architecture](
-cipherdao_architecture.jpg)
-
-
----
-
 ## The Problem
 
 Public DAO governance is broken in ways most builders ignore:
